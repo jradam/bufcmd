@@ -11,7 +11,7 @@ function M.fetch_all_buffers(sets)
       local name = vim.fn.fnamemodify(path, name_modifier)
 
       -- Handle nameless buffers
-      name = name == "" and sets.chars.nameless_buffer_char or name
+      name = name == "" and sets.chars.nameless_buffer or name
 
       -- Restrict name length
       if name and #name > sets.max_name_length then
@@ -53,9 +53,7 @@ function M.add_characters(bufcmd_buffer, chars)
   local display_name = bufcmd_buffer.name
 
   if bufcmd_buffer.modified then
-    display_name = chars.modified_left_char
-      .. display_name
-      .. chars.modified_right_char
+    display_name = chars.modified_left .. display_name .. chars.modified_right
   end
 
   if bufcmd_buffer.active then

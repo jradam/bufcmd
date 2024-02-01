@@ -6,9 +6,9 @@ return {
     max_string = " ... ",
     left_brace = "[",
     right_brace = "]",
-    modified_left_char = "",
-    modified_right_char = "+",
-    nameless_buffer_char = "-",
+    modified_left = "",
+    modified_right = "+",
+    nameless_buffer = "-",
   },
   theme = {
     active = { fg = "", bg = "" },
