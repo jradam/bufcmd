@@ -15,6 +15,7 @@ local h = require("bufcmd.helpers")
 -- optional sorting (alphabetically, time open)
 -- use some default highlight groups so the user doesn't have to set up themselves
 -- find a programmatic way to determine command line available characters
+-- create a gif for the readme
 
 local function bufcmd(sets)
   local bufcmd_table = h.fetch_all_buffers(sets)
