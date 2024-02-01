@@ -85,6 +85,7 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("BufCmdRefresh", refresh_bufcmd, {})
 
   c.apply_commands(sets.keys)
+  start_bufcmd()
 end
 
 return M
