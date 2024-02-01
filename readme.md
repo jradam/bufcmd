@@ -7,6 +7,10 @@
 [![Lua](https://img.shields.io/badge/Lua-blue.svg?logo=lua)](http://www.lua.org)
 [![Neovim](https://img.shields.io/badge/Neovim%200.7+-green.svg?logo=neovim)](https://neovim.io)
 
+<br />
+
+![Alt Text](./example.gif)
+
 </div>
 <br />
 
