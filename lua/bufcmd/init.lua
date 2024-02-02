@@ -27,6 +27,18 @@ local function bufcmd(sets)
 
   local name_list = {}
 
+  -- TODO: Buffer looping
+  -----------------------------------
+  -- when tabbing to a buffer past "...", it should move along and add a "..." to the start
+
+  local test_list
+  table.insert(test_list, { sets.chars.max_string, "BufCmdOther" })
+  for _, each in ipairs(with_visible) do
+    table.insert(test_list, { each.name, h.get_highlight(each) })
+  end
+  table.insert(test_list, { sets.chars.max_string, "BufCmdOther" })
+  -----------------------------------
+
   for _, each in ipairs(with_visible) do
     if each.visible then
       table.insert(name_list, { each.name, h.get_highlight(each) })
