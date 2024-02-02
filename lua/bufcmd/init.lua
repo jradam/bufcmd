@@ -7,7 +7,6 @@ local h = require("bufcmd.helpers")
 -- TODO:
 -- if autocmd_id is false, should also stop commands from working
 -- how to fully expose keys so that user can choose mode/binding/function etc?
--- when selecting a buffer past "...", it should move along and add a "..." to the start
 -- add diagnostic colors
 -- make ESC also trigger buf_cmd
 -- optional make new buffers insert in the left of list
@@ -19,26 +18,26 @@ local h = require("bufcmd.helpers")
 
 local function bufcmd(sets)
   local bufcmd_table = h.fetch_all_buffers(sets)
-  local name_list = {}
 
-  -- Handle duplicate names
+  -- Handle duplicate names, add characters, restrict length so fits in cmd line
   local with_paths = h.add_path_to_duplicates(bufcmd_table)
   local with_extensions = h.add_extension_to_duplicates(with_paths)
+  local with_characters = h.add_characters(with_extensions, sets.chars)
+  local with_visible = h.calculate_visible(with_characters, sets)
 
-  for _, each in ipairs(with_extensions) do
-    -- Add highlights and characters
-    local highlight = h.get_highlight(each)
-    local display_name = h.add_characters(each, sets.chars)
+  local name_list = {}
 
-    -- Construct list
-    table.insert(name_list, { display_name, highlight })
+  for _, each in ipairs(with_visible) do
+    if each.visible then
+      table.insert(name_list, { each.name, h.get_highlight(each) })
+    else
+      table.insert(name_list, { sets.chars.max_string, "BufCmdOther" })
+      break
+    end
   end
 
-  -- Restrict list length so it fits in cmd line
-  local restricted_list = h.restrict_name_list(name_list, sets)
-
   -- Print the list
-  vim.api.nvim_echo(restricted_list, false, {})
+  vim.api.nvim_echo(name_list, false, {})
 end
 
 local autocmd_id = nil

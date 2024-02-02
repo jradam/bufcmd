@@ -28,6 +28,7 @@ function M.fetch_all_buffers(sets)
         active = active,
         modified = modified,
         path = path,
+        visible = true,
       })
     end
   end
@@ -47,24 +48,6 @@ function M.get_highlight(bufcmd_buffer)
   end
 
   return highlight
-end
-
-function M.add_characters(bufcmd_buffer, chars)
-  local display_name = bufcmd_buffer.name
-
-  if bufcmd_buffer.modified then
-    display_name = chars.modified_left .. display_name .. chars.modified_right
-  end
-
-  if bufcmd_buffer.active then
-    display_name = chars.left_brace .. display_name .. chars.right_brace
-  else
-    display_name = string.rep(" ", #chars.left_brace)
-      .. display_name
-      .. string.rep(" ", #chars.right_brace)
-  end
-
-  return display_name
 end
 
 local function shallow_copy(table)
@@ -107,25 +90,65 @@ function M.add_extension_to_duplicates(bufcmd_table)
   return modify_duplicates(bufcmd_table, modify)
 end
 
+function M.add_characters(bufcmd_table, chars)
+  local modified_table = shallow_copy(bufcmd_table)
+
+  for _, each in ipairs(modified_table) do
+    if each.modified then
+      each.name = chars.modified_left .. each.name .. chars.modified_right
+    end
+
+    if each.active then
+      each.name = chars.left_brace .. each.name .. chars.right_brace
+    else
+      each.name = string.rep(" ", #chars.left_brace)
+        .. each.name
+        .. string.rep(" ", #chars.right_brace)
+    end
+  end
+
+  return modified_table
+end
+
 function M.restrict_name_list(name_list, sets)
   local cmd_max_length = vim.o.columns - sets.compensation
   local restricted_list = {}
-  local total_length = #sets.chars.max_string -- Need to account for length of max_string
+
+  -- FIXME: Check this:
+  -- Need to account for length of max_string at start and end
+  local total_length = 2 * #sets.chars.max_string
 
   for _, each in ipairs(name_list) do
-    local display_name = each[1] -- Name is the first entry
-    local name_length = #display_name
+    local name = each[1] -- Name is the first entry
 
-    if total_length + name_length > cmd_max_length then
+    if total_length + #name > cmd_max_length then
       table.insert(restricted_list, { sets.chars.max_string, "BufCmdOther" })
       break
     else
       table.insert(restricted_list, each)
-      total_length = total_length + name_length
+      total_length = total_length + #name
     end
   end
 
   return restricted_list
+end
+
+function M.calculate_visible(bufcmd_table, sets)
+  local modified_table = shallow_copy(bufcmd_table)
+
+  local cmd_max_length = vim.o.columns - sets.compensation
+  local total_length = #sets.chars.max_string -- Need to account for length of max_string
+
+  for _, each in ipairs(modified_table) do
+    if total_length + #each.name > cmd_max_length then
+      each.visible = false
+    else
+      each.visible = true
+      total_length = total_length + #each.name
+    end
+  end
+
+  return modified_table
 end
 
 return M
