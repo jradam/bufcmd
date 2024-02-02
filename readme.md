@@ -1,4 +1,4 @@
-<div align="center">
+<div align="center" style="max-width: 600px; margin: auto;">
 
 ### BufCmd
 
