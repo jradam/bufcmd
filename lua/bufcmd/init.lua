@@ -3,6 +3,7 @@ local default_options = require("bufcmd.options")
 local apply_theme = require("bufcmd.theme")
 local c = require("bufcmd.commands")
 local h = require("bufcmd.helpers")
+local p = require("bufcmd.print")
 
 -- TODO:
 -- if autocmd_id is false, should also stop commands from working
@@ -23,33 +24,10 @@ local function bufcmd(sets)
   local with_paths = h.add_path_to_duplicates(bufcmd_table)
   local with_extensions = h.add_extension_to_duplicates(with_paths)
   local with_characters = h.add_characters(with_extensions, sets.chars)
-  local with_visible = h.calculate_visible(with_characters, sets)
 
-  local name_list = {}
+  local list = p.print(with_characters, sets)
 
-  -- TODO: Buffer looping
-  -----------------------------------
-  -- when tabbing to a buffer past "...", it should move along and add a "..." to the start
-
-  local test_list = {}
-  table.insert(test_list, { sets.chars.max_string, "BufCmdOther" })
-  for _, each in ipairs(with_visible) do
-    table.insert(test_list, { each.name, h.get_highlight(each) })
-  end
-  table.insert(test_list, { sets.chars.max_string, "BufCmdOther" })
-  -----------------------------------
-
-  for _, each in ipairs(with_visible) do
-    if each.visible then
-      table.insert(name_list, { each.name, h.get_highlight(each) })
-    else
-      table.insert(name_list, { sets.chars.max_string, "BufCmdOther" })
-      break
-    end
-  end
-
-  -- Print the list
-  vim.api.nvim_echo(name_list, false, {})
+  if list then vim.api.nvim_echo(list, false, {}) end
 end
 
 local autocmd_id = nil
