@@ -3,12 +3,7 @@ local M = {}
 local h = require("bufcmd.helpers")
 
 -- TODO:
--- What it does currently when TAB to `six`, and then S-Tab back:
--- [one] two  three  four  ...
---  one [two] three  four  ...
---  one  two [three] four  ...
---  one  two  three [four] ...
---  ...  three  four [five] ...
+-- What it does currently when S-Tab back:
 --  ...  four  five  [six]
 --  ...  three  four [five] ...
 --  one  two  three [four] ...
@@ -16,12 +11,7 @@ local h = require("bufcmd.helpers")
 --  one [two] three  four  ...
 -- [one] two  three  four  ...
 
--- What I want it to do when TAB to `six`, and then S-Tab back:
--- [one] two  three  four  ...
---  one [two] three  four  ...
---  one  two [three] four  ...
---  one  two  three [four] ...
---  ...  three  four [five] ...
+-- What I want it to do when S-Tab back:
 --  ...  four  five  [six]
 --  ...  four [five]  six
 --  ... [four] five   six
@@ -29,7 +19,7 @@ local h = require("bufcmd.helpers")
 --  ... [two] three  four  ...
 -- [one] two  three  four  ...
 
--- Simple terms: IF i am about to TAB onto a " ... ", then reveal a new tab in that direction. If there are more tabs in that direction, add a new " ... ".
+-- Simple terms: IF i am about to TAB onto a " ... ", then reveal a new tab in that direction. If, after tabbing, there are more hidden tabs in that direction, add a new " ... ".
 
 function M.print(bufcmd_table, sets)
   local active_index = nil
@@ -108,23 +98,6 @@ function M.print(bufcmd_table, sets)
 
   expand_left(active_index)
   expand_right(active_index)
-
-  -- Adjust expansion order based on added max strings
-  if added_left_max and not added_right_max then
-    -- Reset the state for re-expansion
-    visible_buffers = {
-      {
-        bufcmd_table[active_index].name,
-        h.get_highlight(bufcmd_table[active_index]),
-      },
-    }
-    current_length = #bufcmd_table[active_index].name
-    added_left_max = false -- Reset since we will re-expand
-    added_right_max = false -- Reset since we will re-expand
-
-    expand_right(active_index)
-    expand_left(active_index)
-  end
 
   return visible_buffers
 end
