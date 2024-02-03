@@ -67,14 +67,8 @@ function M.print(bufcmd_table, sets)
     if buffer.active then active_index = index end
   end
 
-  -- Use last_active if no active is found
-  if not active_index then active_index = last_active end
-
-  -- If still no active_index, default
-  if not active_index then
-    -- FIXME:
-    -- ???
-  end
+  -- If no active_index, just return
+  if not active_index then return end
 
   -- Add active buffer first
   table.insert(visible_buffers, {
@@ -84,9 +78,13 @@ function M.print(bufcmd_table, sets)
   current_length = #bufcmd_table[active_index].name
 
   if showing_left_max then
+    -- FIXME: this never happens since showing_left_max happens within this loop
+    -- But I need it to be that if showing_left_max WOULD be true, this happens
+    print("right first")
     expand_right(active_index)
     expand_left(active_index)
   else -- Default behavior is same as showing_right_max
+    print("left first")
     expand_left(active_index)
     expand_right(active_index)
   end
