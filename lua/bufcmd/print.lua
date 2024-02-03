@@ -2,8 +2,34 @@ local M = {}
 
 local h = require("bufcmd.helpers")
 
-local showing_left_max = false
-local showing_right_max = false
+-- TODO:
+-- What it does currently when TAB to `six`, and then S-Tab back:
+-- [one] two  three  four  ...
+--  one [two] three  four  ...
+--  one  two [three] four  ...
+--  one  two  three [four] ...
+--  ...  three  four [five] ...
+--  ...  four  five  [six]
+--  ...  three  four [five] ...
+--  one  two  three [four] ...
+--  one  two [three] four  ...
+--  one [two] three  four  ...
+-- [one] two  three  four  ...
+
+-- What I want it to do when TAB to `six`, and then S-Tab back:
+-- [one] two  three  four  ...
+--  one [two] three  four  ...
+--  one  two [three] four  ...
+--  one  two  three [four] ...
+--  ...  three  four [five] ...
+--  ...  four  five  [six]
+--  ...  four [five]  six
+--  ... [four] five   six
+--  ... [three] four  five  ...
+--  ... [two] three  four  ...
+-- [one] two  three  four  ...
+
+-- Simple terms: IF i am about to TAB onto a " ... ", then reveal a new tab in that direction. If there are more tabs in that direction, add a new " ... ".
 
 function M.print(bufcmd_table, sets)
   local active_index = nil
@@ -12,13 +38,27 @@ function M.print(bufcmd_table, sets)
   local current_length = 0
   local visible_buffers = {}
 
+  local added_left_max = false
+  local added_right_max = false
+
   local function can_add_buffer(new_length)
     local upcoming_length = current_length + new_length
     local available_space = max_length - reserved_space
     return upcoming_length <= available_space
   end
 
-  local function expand_left(from) -- Expand to the left of the active buffer
+  local function add_max_string(side)
+    local max_string = { sets.chars.max_string, "BufCmdOther" }
+    if side == "left" and not added_left_max then
+      table.insert(visible_buffers, 1, max_string)
+      added_left_max = true
+    elseif side == "right" and not added_right_max then
+      table.insert(visible_buffers, max_string)
+      added_right_max = true
+    end
+  end
+
+  local function expand_left(from)
     for index = from - 1, 1, -1 do
       if can_add_buffer(#bufcmd_table[index].name) then
         table.insert(
@@ -28,20 +68,13 @@ function M.print(bufcmd_table, sets)
         )
         current_length = current_length + #bufcmd_table[index].name
       else
-        if not showing_left_max then
-          table.insert(
-            visible_buffers,
-            1,
-            { sets.chars.max_string, "BufCmdOther" }
-          )
-        end
-        showing_left_max = true
+        add_max_string("left")
         break
       end
     end
   end
 
-  local function expand_right(from) -- Expand to the right of the active buffer
+  local function expand_right(from)
     for index = from + 1, #bufcmd_table do
       if can_add_buffer(#bufcmd_table[index].name) then
         table.insert(
@@ -50,13 +83,7 @@ function M.print(bufcmd_table, sets)
         )
         current_length = current_length + #bufcmd_table[index].name
       else
-        if not showing_right_max then
-          table.insert(
-            visible_buffers,
-            { sets.chars.max_string, "BufCmdOther" }
-          )
-        end
-        showing_right_max = true
+        add_max_string("right")
         break
       end
     end
@@ -82,8 +109,22 @@ function M.print(bufcmd_table, sets)
   expand_left(active_index)
   expand_right(active_index)
 
-  showing_left_max = false
-  showing_right_max = false
+  -- Adjust expansion order based on added max strings
+  if added_left_max and not added_right_max then
+    -- Reset the state for re-expansion
+    visible_buffers = {
+      {
+        bufcmd_table[active_index].name,
+        h.get_highlight(bufcmd_table[active_index]),
+      },
+    }
+    current_length = #bufcmd_table[active_index].name
+    added_left_max = false -- Reset since we will re-expand
+    added_right_max = false -- Reset since we will re-expand
+
+    expand_right(active_index)
+    expand_left(active_index)
+  end
 
   return visible_buffers
 end

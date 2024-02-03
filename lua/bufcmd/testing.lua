@@ -1,6 +1,8 @@
 -- Arbitrary two-digit number that should be well above what's necessary
 local COMPENSATION_MAX = 80
 
+-- FIXME: this breaks on zoomed in screens?
+
 -- This test determines the correct `compensation` value for the BufCmd options table.
 -- It works by sending messages of increasing length to the command line.
 -- When the prompt is triggered ("Press ENTER to continue") the user has their compensation value.

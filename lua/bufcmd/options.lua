@@ -1,7 +1,7 @@
 return {
   max_name_length = 20,
   show_extensions = false,
-  compensation = 12,
+  compensation = 52,
   chars = {
     max_string = " ... ",
     left_brace = "[",
