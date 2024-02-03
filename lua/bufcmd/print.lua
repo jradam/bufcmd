@@ -2,7 +2,6 @@ local M = {}
 
 local h = require("bufcmd.helpers")
 
-local last_active = nil
 local showing_left_max = false
 local showing_right_max = false
 
@@ -14,6 +13,62 @@ function M.print(bufcmd_table, sets)
   local function can_add_buffer(new_length, current_length)
     local upcoming_length = current_length + new_length
     return upcoming_length <= (max_length - reserved_space)
+  end
+
+  local function can_add_buffer_test(new_length, current_length)
+    print("-------------------------")
+    print("New length: " .. new_length)
+    print("Current length: " .. current_length)
+    local upcoming_length = current_length + new_length
+    print("Upcoming length: " .. upcoming_length)
+    print("Max length: " .. (max_length - reserved_space))
+    print(
+      "Can add: "
+        .. (
+          upcoming_length <= (max_length - reserved_space) and "true"
+          or "false"
+        )
+    )
+    return upcoming_length <= (max_length - reserved_space)
+  end
+
+  local function test_left(from)
+    local test_buffers = {}
+    local length = 0
+    local hit_left = false
+
+    for index = from - 1, 1, -1 do
+      if can_add_buffer_test(#bufcmd_table[index].name, length) then
+        table.insert(
+          test_buffers,
+          1,
+          { bufcmd_table[index].name, h.get_highlight(bufcmd_table[index]) }
+        )
+        length = length + #bufcmd_table[index].name
+      else
+        hit_left = true
+      end
+    end
+    return hit_left
+  end
+
+  local function test_right(from)
+    local test_buffers = {}
+    local length = 0
+    local hit_right
+
+    for index = from + 1, #bufcmd_table do
+      if can_add_buffer(#bufcmd_table[index].name, length) then
+        table.insert(
+          test_buffers,
+          { bufcmd_table[index].name, h.get_highlight(bufcmd_table[index]) }
+        )
+        length = length + #bufcmd_table[index].name
+      else
+        hit_right = true
+      end
+    end
+    return hit_right
   end
 
   local current_length = 0
@@ -77,17 +132,13 @@ function M.print(bufcmd_table, sets)
   })
   current_length = #bufcmd_table[active_index].name
 
-  if showing_left_max then
-    -- FIXME: this never happens since showing_left_max happens within this loop
-    -- But I need it to be that if showing_left_max WOULD be true, this happens
-    print("right first")
-    expand_right(active_index)
-    expand_left(active_index)
-  else -- Default behavior is same as showing_right_max
-    print("left first")
-    expand_left(active_index)
-    expand_right(active_index)
-  end
+  local hit_left_max = test_left(active_index)
+  -- local hit_right_max = test_right(active_index)
+
+  print("Hit left max: " .. (hit_left_max and "true" or "false"))
+
+  expand_left(active_index)
+  expand_right(active_index)
 
   showing_left_max = false
   showing_right_max = false
