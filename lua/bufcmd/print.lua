@@ -63,7 +63,10 @@ function M.print(bufcmd_table, sets)
   end
 
   for index, buffer in ipairs(bufcmd_table) do
-    if buffer.active then active_index = index end
+    if buffer.active then
+      active_index = index
+      break
+    end
   end
 
   -- If no active_index, just return
@@ -74,7 +77,7 @@ function M.print(bufcmd_table, sets)
     bufcmd_table[active_index].name,
     h.get_highlight(bufcmd_table[active_index]),
   })
-  current_length = #bufcmd_table[active_index].name
+  current_length = current_length + #bufcmd_table[active_index].name
 
   expand_left(active_index)
   expand_right(active_index)
