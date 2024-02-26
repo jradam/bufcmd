@@ -10,7 +10,6 @@ local p = require("bufcmd.print")
 -- how to fully expose keys so that user can choose mode/binding/function etc?
 -- add diagnostic colors
 -- make ESC also trigger buf_cmd
--- optional make new buffers insert in the left of list
 -- add shortcuts for moving selected buffer left or right in list
 -- optional sorting (alphabetically, time open)
 -- use some default highlight groups so the user doesn't have to set up themselves
@@ -24,8 +23,9 @@ local function bufcmd(sets)
   local with_paths = h.add_path_to_duplicates(bufcmd_table)
   local with_extensions = h.add_extension_to_duplicates(with_paths)
   local with_characters = h.add_characters(with_extensions, sets.chars)
+  local with_reversed = h.reverse(with_characters, sets.reverse_order)
 
-  local list = p.print(with_characters, sets)
+  local list = p.print(with_reversed, sets)
 
   if list then vim.api.nvim_echo(list, false, {}) end
 end
@@ -74,7 +74,7 @@ function M.setup(opts)
   vim.api.nvim_create_user_command("BufCmdStop", stop_bufcmd, {})
   vim.api.nvim_create_user_command("BufCmdRefresh", refresh_bufcmd, {})
 
-  c.apply_commands(sets.keys)
+  c.apply_commands(sets)
   start_bufcmd()
 end
 

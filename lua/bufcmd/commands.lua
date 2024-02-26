@@ -20,7 +20,9 @@ local function close_others()
 end
 local function run_compensation_test() require("bufcmd.testing")() end
 
-function M.apply_commands(keys)
+function M.apply_commands(sets)
+  local keys = sets.keys
+
   local bindings = {
     {
       mode = "n",
@@ -39,14 +41,14 @@ function M.apply_commands(keys)
     {
       mode = "n",
       key = keys.next_buffer,
-      action = next_buffer,
+      action = sets.reverse_order and prev_buffer or next_buffer,
       desc = "Next buffer",
       update = true,
     },
     {
       mode = "n",
       key = keys.prev_buffer,
-      action = prev_buffer,
+      action = sets.reverse_order and next_buffer or prev_buffer,
       desc = "Prev buffer",
       update = true,
     },

@@ -109,4 +109,15 @@ function M.add_characters(bufcmd_table, chars)
   return modified_table
 end
 
+function M.reverse(bufcmd_table, reverse)
+  if not reverse then return bufcmd_table end
+
+  local reversed_table = {}
+  for index, value in ipairs(bufcmd_table) do
+    reversed_table[#bufcmd_table + 1 - index] = value
+  end
+
+  return reversed_table
+end
+
 return M
