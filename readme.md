@@ -39,6 +39,7 @@ opts = {
   max_name_length = 20,
   show_extensions = false,
   compensation = 12,
+  reverse_order = false,
   chars = {
     max_string = " ... ",
     left_brace = "[",
