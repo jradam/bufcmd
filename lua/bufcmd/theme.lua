@@ -27,7 +27,7 @@ end
 ---@param theme table<string, {fg: string, bg: string}> The colors for each highlight group.
 return function(theme)
   apply(theme.current, "BufCmdActive", "Normal")
-  apply(theme.other, "BufCmdOther", "Comment")
+  apply(theme.inactive, "BufCmdInactive", "Comment")
   apply(theme.modified, "BufCmdModified", "String")
   apply(theme.current_modified, "BufCmdActiveModified", "Function")
 end

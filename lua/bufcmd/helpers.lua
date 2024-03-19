@@ -36,7 +36,7 @@ function M.fetch_all_buffers(sets)
 end
 
 function M.get_highlight(bufcmd_buffer)
-  local highlight = "BufCmdOther"
+  local highlight = "BufCmdInactive"
 
   if bufcmd_buffer.active and bufcmd_buffer.modified then
     highlight = "BufCmdActiveModified"

@@ -38,7 +38,7 @@ function M.print(bufcmd_table, sets)
   end
 
   local function add_max_string(side)
-    local max_string = { sets.chars.max_string, "BufCmdOther" }
+    local max_string = { sets.chars.max_string, "BufCmdInactive" }
     if side == "left" and not added_left_max then
       table.insert(visible_buffers, 1, max_string)
       added_left_max = true

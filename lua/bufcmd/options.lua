@@ -13,7 +13,7 @@ return {
   },
   theme = {
     active = { fg = "", bg = "" },
-    other = { fg = "", bg = "" },
+    inactive = { fg = "", bg = "" },
     modified = { fg = "", bg = "" },
     active_modified = { fg = "", bg = "" },
   },
