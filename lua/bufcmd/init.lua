@@ -12,7 +12,6 @@ local p = require("bufcmd.print")
 -- make ESC also trigger buf_cmd
 -- add shortcuts for moving selected buffer left or right in list
 -- optional sorting (alphabetically, time open)
--- use some default highlight groups so the user doesn't have to set up themselves
 -- find a programmatic way to determine command line available characters
 -- add a "show messages" command
 -- Add notes to options in the readme
