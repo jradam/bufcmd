@@ -1,7 +1,7 @@
 return {
   max_name_length = 20,
   show_extensions = false,
-  compensation = 12,
+  compensation = 18,
   reverse_order = false,
   chars = {
     max_string = " ... ",

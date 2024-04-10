@@ -66,6 +66,7 @@ function M.apply_commands(sets)
       desc = "Close others",
       update = true,
     },
+    -- TODO: this should have own command ":BufCmdTest"
     {
       mode = "n",
       key = keys.run_compensation_test,
