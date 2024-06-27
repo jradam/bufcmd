@@ -24,6 +24,5 @@ return {
     close_others = "<leader>z",
     start_bufcmd = "<leader><Tab>",
     stop_bufcmd = "<leader><S-Tab>",
-    run_compensation_test = "<leader>T",
   },
 }

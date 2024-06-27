@@ -61,7 +61,6 @@ opts = {
     close_others = "<leader>z",
     start_bufcmd = "<leader><Tab>",
     stop_bufcmd = "<leader><S-Tab>",
-    run_compensation_test = "<leader>T",
   },
 }
 ```
@@ -72,7 +71,7 @@ If you continuously see...
 
 > Press ENTER or type command to continue
 
-...in your command line, you need to set a higher `compensation` value. You can run the included test (run_compensation_test) to find the exact best value for your editor.
+...in your command line, it means BufCmd is overflowing, and you need to set a higher 'compensation' value. You can run the included `:BufCmdTest` to find the exact best value for your editor.
 
 ### Other buffer management tools
 

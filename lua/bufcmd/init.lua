@@ -49,6 +49,17 @@ local function stop_bufcmd()
   end
 end
 
+local function test_bufcmd()
+  -- Enter normal mode
+  vim.api.nvim_feedkeys(
+    vim.api.nvim_replace_termcodes("<Esc>", true, false, true),
+    "n",
+    true
+  )
+  -- Small delay to ensure normal mode
+  vim.defer_fn(require("bufcmd.testing"), 500)
+end
+
 function M.setup(opts)
   opts = opts or {}
   local sets = {}
@@ -72,6 +83,7 @@ function M.setup(opts)
 
   vim.api.nvim_create_user_command("BufCmdStart", start_bufcmd, {})
   vim.api.nvim_create_user_command("BufCmdStop", stop_bufcmd, {})
+  vim.api.nvim_create_user_command("BufCmdTest", test_bufcmd, {})
   vim.api.nvim_create_user_command("BufCmdRefresh", refresh_bufcmd, {})
 
   c.apply_commands(sets)

@@ -18,7 +18,6 @@ local function close_others()
     end
   end
 end
-local function run_compensation_test() require("bufcmd.testing")() end
 
 function M.apply_commands(sets)
   local keys = sets.keys
@@ -65,14 +64,6 @@ function M.apply_commands(sets)
       action = close_others,
       desc = "Close others",
       update = true,
-    },
-    -- TODO: this should have own command ":BufCmdTest"
-    {
-      mode = "n",
-      key = keys.run_compensation_test,
-      action = run_compensation_test,
-      desc = "Test compensation",
-      update = false,
     },
   }
 
